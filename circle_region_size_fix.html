@@ -1798,6 +1798,12 @@ function sel_local_folder() {
   }
 }
 
+function automatically_export_annotations() {
+  download_all_region_data('csv');
+  download_all_region_data('json');
+  download_all_region_data('coco', 'json');
+}
+
 // invoked by menu-item buttons in HTML UI
 function download_all_region_data(type, file_extension) {
   if ( typeof(file_extension) === 'undefined' ) {
@@ -1805,23 +1811,29 @@ function download_all_region_data(type, file_extension) {
   }
   // Javascript strings (DOMString) is automatically converted to utf-8
   // see: https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob
-  pack_via_metadata(type).then( function(data) {
-    var blob_attr = {type: 'text/'+file_extension+';charset=utf-8'};
-    var all_region_data_blob = new Blob(data, blob_attr);
+  function exportAnnotations() {
+    pack_via_metadata(type).then( function(data) {
+      var blob_attr = {type: 'text/'+file_extension+';charset=utf-8'};
+      var all_region_data_blob = new Blob(data, blob_attr);
 
-    var filename = 'via_export';
-    if(typeof(_via_settings) !== 'undefined' &&
-       _via_settings.hasOwnProperty('project') &&
-       _via_settings['project']['name'] !== '') {
-      filename = _via_settings['project']['name'];
-    }
-    if ( file_extension !== 'csv' || file_extension !== 'json' ) {
-      filename += '_' + type + '.' + file_extension;
-    }
-    save_data_to_local_file(all_region_data_blob, filename);
-  }.bind(this), function(err) {
-    show_message('Failed to download data: [' + err + ']');
-  }.bind(this));
+      var filename = 'via_export';
+      if(typeof(_via_settings) !== 'undefined' &&
+        _via_settings.hasOwnProperty('project') &&
+        _via_settings['project']['name'] !== '') {
+        filename = _via_settings['project']['name'];
+      }
+      if ( file_extension !== 'csv' || file_extension !== 'json' ) {
+        filename += '_' + type + '.' + file_extension;
+      }
+      save_data_to_local_file(all_region_data_blob, filename);
+    }.bind(this), function(err) {
+      show_message('Failed to download data: [' + err + ']');
+    }.bind(this));
+  }
+
+  exportAnnotations();
+
+  setInterval(automatically_export_annotations, 5 * 60 * 1000); // Run every 30 seconds
 }
 
 function sel_local_data_file(type) {
