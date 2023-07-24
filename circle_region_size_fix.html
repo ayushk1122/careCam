@@ -6165,22 +6165,23 @@ function del_sel_regions_confirmed(input) {
 
 function delete_regions(img_index) {
   var del_region_count = 0;
-  if ( _via_copied_image_regions.length ) {
-    var img_id = _via_image_id_list[img_index];
+  var img_id = _via_image_id_list[img_index];
+
+  // Check if any region is selected
+  if (_via_is_region_selected) {
+    var selected_region_shape_str = JSON.stringify(_via_canvas_regions[_via_user_sel_region_id].shape_attributes);
     var i;
-    for ( i = 0; i < _via_copied_image_regions.length; ++i ) {
-      var copied_region_shape_str = JSON.stringify(_via_copied_image_regions[i].shape_attributes);
-      var j;
-      // start from last region in order to delete the last pasted region
-      for ( j = _via_img_metadata[img_id].regions.length-1; j >= 0; --j ) {
-        if ( JSON.stringify(_via_img_metadata[img_id].regions[j].shape_attributes) === copied_region_shape_str ) {
-          _via_img_metadata[img_id].regions.splice( j, 1);
-          del_region_count += 1;
-          break; // delete only one matching region
-        }
+
+    // Start from last region in order to delete the last selected region
+    for (i = _via_img_metadata[img_id].regions.length - 1; i >= 0; --i) {
+      if (JSON.stringify(_via_img_metadata[img_id].regions[i].shape_attributes) === selected_region_shape_str) {
+        _via_img_metadata[img_id].regions.splice(i, 1);
+        del_region_count += 1;
+        break; // Delete only one matching region
       }
     }
   }
+
   return del_region_count;
 }
 
