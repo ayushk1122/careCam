@@ -1152,6 +1152,33 @@ POSSIBILITY OF SUCH DAMAGE.
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- DEMO SCRIPT AUTOMATICALLY INSERTED BY VIA PACKER SCRIPT -->
 <!-- START: Contents of file: via.js-->
+
+    <script>
+      // Step 1: Add event listener to document for keypress events
+      document.addEventListener("keydown", handleKeyPress);
+      
+      // Step 2: Handle keypress events and check for the shortcut key combination
+      function handleKeyPress(event) {
+        if (event.ctrlKey && event.key === "l") {
+          moveNextLabelingPoint();
+        }
+      }
+      
+      // ... your existing JavaScript code ...
+      
+      // Step 4: Move to the next labeling point in the dropdown
+      function moveNextLabelingPoint() {
+        var dropdown = document.getElementById("setValue_by_nathan");
+        var currentValue = dropdown.value;
+        var options = dropdown.options;
+        var currentIndex = Array.from(options).findIndex((option) => option.value === currentValue);
+      
+        if (currentIndex !== -1 && currentIndex < options.length - 1) {
+          var nextValue = options[currentIndex + 1].value;
+          dropdown.value = nextValue;
+        }
+      }
+      </script>
 <script>
 /*
   VGG Image Annotator (via)
