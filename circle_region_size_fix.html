@@ -123,8 +123,10 @@ textarea { border:1px solid #cccccc; margin:0.6rem 0; padding:0.2rem 0.4rem; }
 
 /* Middle panel: containing #image_panel, #leftsidebar */
 .middle_panel { display:table; table-layout:fixed; width:100%; z-index:1; padding:0;}
-#leftsidebar { display:none; z-index:10; vertical-align:top;}
-#display_area { display:table-cell; width:100%; z-index:1; margin:0; padding-left:1em; vertical-align:top; }
+/* added overflow and scroll bar when overflow of images added, and changed position to fixed */
+#leftsidebar { display:none; z-index:10; vertical-align:top; position: fixed; background-color: #ffffff; overflow-y: auto;  height: calc(100% - 20px);}
+
+#display_area { display:table-cell; width:100%; z-index:1; margin:0; padding-left:300px; vertical-align:top; }
 /* layers of canvas */
 #image_panel        { position:relative; outline:none; display: inline-block; vertical-align: top; }
 #image_panel img    { visibility:hidden; opacity:0; position:absolute; top:0px; left:0px; width:100%; height:100%; outline:none; }
@@ -135,7 +137,7 @@ textarea { border:1px solid #cccccc; margin:0.6rem 0; padding:0.2rem 0.4rem; }
 /* image buffer
 #image_panel .fadein { visibility:visible; opacity:1; transition: visibility 0s linear 0s, opacity 300ms; }
 #image_panel .fadeout { visibility:hidden; opacity:0; transition: visibility 0s linear 300ms, opacity 300ms; }
-*/
+*/  
 
 #chart_panel { width: 40%; float: right; padding-left: 20px; padding-right: 20px }
 
@@ -158,20 +160,21 @@ textarea { border:1px solid #cccccc; margin:0.6rem 0; padding:0.2rem 0.4rem; }
 #image_grid_panel #image_grid_content #image_grid_content_rshape { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
 #image_grid_panel #image_grid_content img { float:left; margin:0; }
 
-#leftsidebar_collapse_panel { display:none; position:relative; z-index:10; vertical-align:top; }
+#leftsidebar_collapse_panel { display:none; position:absolute; z-index:10; vertical-align:top; }
 #leftsidebar_show_button { font-size:large; margin-left:0.1rem; }
 #leftsidebar_show_button:hover { color:red; cursor: pointer; }
 
+
 /* Left sidebar accordion */
-button.leftsidebar_accordion { font-size:large; background-color:#f2f2f2; cursor:pointer; padding:0.5em 0.5em; width:100%; text-align:left; border:0; outline:none; }
+button.leftsidebar_accordion { font-size:large; background-color:#f2f2f2; cursor:pointer; padding:0.5em 0.5em; width:100%; text-align:left; border:0; outline:none;}
 button.leftsidebar_accordion:focus { outline: none; }
 button.leftsidebar_accordion.active, button.leftsidebar_accordion:hover { background-color: #e6e6e6; }
 button.leftsidebar_accordion:after { content:'\02795'; color:#4d4d4d; float:right; }
 button.leftsidebar_accordion.active:after { content: '\2796'; }
 .leftsidebar_accordion_panel { display:none; padding:0 0.5em; font-size:small; border-right:2px solid #f2f2f2; border-bottom:2px solid #f2f2f2; }
 .leftsidebar_accordion_panel.show { display:block; }
-
 /* Keyboard shortcut panel */
+
 .leftsidebar_accordion_panel table { border-collapse:collapse; }
 .leftsidebar_accordion_panel td { border:1px solid #f2f2f2; padding:0.2rem 0.4rem; }
 
@@ -829,8 +832,8 @@ ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
 
           </table>
         </div>
-		
-		<button class="leftsidebar_accordion">Confirmation Mode (Old)</button>
+    
+    <button class="leftsidebar_accordion">Confirmation Mode (Old)</button>
         <div class="leftsidebar_accordion_panel" style="padding:5%" id="confirmationPanel">
           <div style="width: 100%;">
             <label style="font-size: larger; font-style: italic;">Use confirmation mode</label>
@@ -840,7 +843,7 @@ ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
             <label style="font-size: larger; font-style: italic;">Hide other points</label>
             <input type="checkbox" id="onlyShow" onchange="onHide()">
           </div>
-		  <div style="width: 100%;">
+      <div style="width: 100%;">
             <label style="font-size: larger; font-style: italic;">Zoom on points</label>
             <input type="checkbox" id="zoomPoints" onclick="zoomCheckChange()" >
           </div>
@@ -848,6 +851,7 @@ ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
         </div>
 
       </div> <!-- end of leftsidebar -->
+      
 
       <!-- Main display area: contains image canvas, ... -->
       <div id="display_area">
@@ -1178,7 +1182,24 @@ POSSIBILITY OF SUCH DAMAGE.
           dropdown.value = nextValue;
         }
       }
-      </script>
+
+       // Function to update the position of the left taskbar when zooming or scrolling
+      function updateLeftSidebarPosition() {
+        var leftSidebar = document.getElementById('leftsidebar');
+        var boundingRect = leftSidebar.getBoundingClientRect();
+        var leftOffset = boundingRect.left;
+
+        // Set the left taskbar's left position to the offset
+        leftSidebar.style.left = leftOffset + 'px';
+      }
+
+      // Call the updateLeftSidebarPosition() function when the user zooms or scrolls
+      window.addEventListener('resize', updateLeftSidebarPosition);
+      window.addEventListener('scroll', updateLeftSidebarPosition);
+
+      // Call the updateLeftSidebarPosition() function once on page load
+      window.addEventListener('load', updateLeftSidebarPosition);
+    </script>
 <script>
 /*
   VGG Image Annotator (via)
